@@ -13,45 +13,41 @@ List flattenList(List inputList) {
   List flattenedList = [];
   for (var x in inputList) {
     if (x is List) {
-      print('x is $x');
-      extractor(flattenedList, x);
+      flattenedList.addAll(flattenList(x));
       continue;
     }
     if (x is Function) {
-      print('function loop x is ${x()}');
       if (x() is List) {
-        extractor(flattenedList, x());
+        flattenedList.addAll(flattenList(x()));
       } else {
         flattenedList.add(x());
         continue;
       }
     } else {
-      print('x is $x');
       flattenedList.add(x);
     }
   }
   return flattenedList;
 }
 
-void extractor(List flattenedList, List x) {
-  for (var y in x) {
-    if (y is List) {
-      extractor(flattenedList, y);
-    } else if (y is Function) {
-      if (y() is List) {
-        print('${y()}');
-        extractor(flattenedList, y());
-      } else {
-        flattenedList.add(y());
-      }
-      continue;
-    } else {
-      flattenedList.add(y);
-    }
-  }
-}
-
 main() {
+  print(flattenList([
+    1,
+    "2",
+    [
+      3,
+      () {
+        return [
+          4,
+          [4,[4,[44]]]
+        ];
+      },
+      ["five"],
+      "six",
+      true,
+      {1: "val"}
+    ]
+  ]));
   print(flattenList([
     () {
       return [1, 2, 3];
